@@ -1,1 +1,44 @@
+name: Manual K8s Deployment
 
+on:
+  workflow_dispatch:
+    inputs:
+      deploy-environment:
+        description: Environment to Deploy
+        required: true
+        type: choice
+        options:
+          - Dev
+          - Non-Prod
+          - Prod
+
+jobs:
+
+    get-env-to-deploy:
+      runs-on: ubuntu-runner
+      outputs:
+        deploy-env: ${{ steps.calc-env.outputs.deploy-env }}
+      steps:
+        - name: Map Environment
+          id: calc-env
+          uses: actions/github-script@v7
+          with:
+            script: |
+              const core = require('@actions/core')
+              let input = core.getInput('deploy-environment')
+              let env = input === 'Dev' ? 'dev': input === 'Non-Prod' ? 'nonprod' : 'prod'
+              core.setOutput('deploy-env', env);
+          
+        - name: Print deploy env variable
+          run: echo ${{ github.events.input.deploy-environment }}
+              
+
+
+    deploy-to-dev:
+      runs-on: ubuntu-latest
+      needs:  get-env-to-deploy
+      steps: 
+        - name: Deploy to Environment
+          run: |
+            echo "${{ needs.get-env-to-deploy.outputs.deploy-env }}"
+            echo "${{ github.events.inputs.deploy-environment }}"
