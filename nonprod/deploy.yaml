@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: uad-test-deployment
+  name: uad-nonprod-deployment
   labels:
     app: uad
-    environment: test
+    environment: nonprod
 spec:
   replicas: 3
   selector:
     matchLabels:
       app: uad
-      environment: test
+      environment: nonprod
   template:
     metadata:
       labels:
         app: uad
-        environment: test
+        environment: nonprod
     spec:
       containers:
       - name: uad-container
