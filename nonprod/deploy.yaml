@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uad-test-deployment
+  labels:
+    app: uad
+    environment: test
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: uad
+      environment: test
+  template:
+    metadata:
+      labels:
+        app: uad
+        environment: test
+    spec:
+      containers:
+      - name: uad-container
+        image: uad:v1
+        ports:
+        - containerPort: 80
